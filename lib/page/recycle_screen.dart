@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/widgets/drawer.dart';
 
 import '../blocs/task_bloc/task_bloc.dart';
 import '../blocs/task_bloc/task_event.dart';
@@ -18,17 +19,17 @@ class RecycleBinScreen extends StatelessWidget {
       List<Task> removedTasks = state.removedTasks.reversed.toList();
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.deepPurple,
-          title: Text(
+          title: const Text(
             'Recycle Bin',
             style: TextStyle(color: Colors.white),
           ),
         ),
+        drawer: buildDrawer(context, state),
         body: SingleChildScrollView(
           child: Column(
             children: [
               Container(
-                margin: EdgeInsets.symmetric(vertical: 15),
+                margin: const EdgeInsets.symmetric(vertical: 15),
                 height: 35,
                 width: 70,
                 decoration: BoxDecoration(
@@ -39,7 +40,7 @@ class RecycleBinScreen extends StatelessWidget {
                     state.removedTasks.length > 1
                         ? '${state.removedTasks.length} Tasks'
                         : '${state.removedTasks.length} Task',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

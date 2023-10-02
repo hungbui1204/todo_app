@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/blocs/task_bloc/task_bloc.dart';
 import 'package:todo_app/blocs/task_bloc/task_event.dart';
 import 'package:todo_app/blocs/task_bloc/task_state.dart';
-import 'package:todo_app/page/recycle_screen.dart';
+import 'package:todo_app/widgets/drawer.dart';
 
 import '../model/task_model.dart';
 
@@ -78,47 +78,12 @@ class _TaskScreenState extends State<TaskScreen> {
       List<Task> allTasks = state.allTasks.reversed.toList();
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.deepPurple,
-          title: Text(
+          title: const Text(
             'My Tasks',
             style: TextStyle(color: Colors.white),
           ),
         ),
-        drawer: Drawer(
-          child: SafeArea(
-            child: ListView(
-              children: [
-                SizedBox(
-                  height: 100,
-                  child: DrawerHeader(
-                    decoration: BoxDecoration(color: Colors.deepPurple),
-                    child: Text(
-                      'Task drawer',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.white),
-                    ),
-                  ),
-                ),
-                ListTile(
-                  title: Text('My tasks (${state.allTasks.length})'),
-                  trailing: Icon(Icons.folder_shared),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Recycle bin (${state.removedTasks.length})'),
-                  trailing: Icon(Icons.recycling),
-                  onTap: () {
-                    Navigator.of(context).pushNamed(RecycleBinScreen.id);
-                  },
-                )
-              ],
-            ),
-          ),
-        ),
+        drawer: buildDrawer(context, state),
         body: SingleChildScrollView(
           child: Column(
             children: [
