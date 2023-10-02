@@ -5,7 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:todo_app/blocs/switch_bloc/switch_bloc.dart';
 import 'package:todo_app/blocs/switch_bloc/switch_state.dart';
 import 'package:todo_app/blocs/task_bloc/task_bloc.dart';
-import 'package:todo_app/page/task_screen.dart';
+import 'package:todo_app/page/tabs_screen.dart';
 import 'package:todo_app/services/app_theme.dart';
 import 'package:todo_app/services/routes.dart';
 
@@ -34,11 +34,11 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'Todo App BloC',
             onGenerateRoute: appRoutes.onGenerateRoute,
-            initialRoute: TaskScreen.id,
+            initialRoute: TabsScreen.id,
             theme: state.switchValue
                 ? AppThemes.appThemeData[AppTheme.darkTheme]
                 : AppThemes.appThemeData[AppTheme.lightTheme],
-            home: const TaskScreen(),
+            home: const TabsScreen(),
           );
         }));
   }

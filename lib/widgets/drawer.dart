@@ -4,7 +4,7 @@ import 'package:todo_app/blocs/switch_bloc/switch_bloc.dart';
 import 'package:todo_app/blocs/switch_bloc/switch_event.dart';
 import 'package:todo_app/blocs/switch_bloc/switch_state.dart';
 import 'package:todo_app/blocs/task_bloc/task_state.dart';
-import 'package:todo_app/page/task_screen.dart';
+import 'package:todo_app/page/tabs_screen.dart';
 
 import '../page/recycle_screen.dart';
 
@@ -26,10 +26,11 @@ Drawer buildDrawer(BuildContext context, TaskState taskState) {
             ),
           ),
           ListTile(
-            title: Text('My tasks (${taskState.allTasks.length})'),
+            title: Text(
+                'My tasks (${taskState.pendingTasks.length + taskState.completedTasks.length})'),
             trailing: const Icon(Icons.folder_shared),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(TaskScreen.id);
+              Navigator.of(context).pushReplacementNamed(TabsScreen.id);
             },
           ),
           ListTile(
