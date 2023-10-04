@@ -11,6 +11,7 @@ class TaskBloc extends HydratedBloc<TaskEvent, TaskState> {
     on<DeleteTaskEvent>(_deleteTaskEvent);
     on<RemoveTaskEvent>(_removeTaskEvent);
     on<RestoreTaskEvent>(_restoreTaskEvent);
+    on<SearchTaskEvent>(_searchTaskEvent);
   }
   void _addTask(AddTaskEvent event, Emitter<TaskState> emit) {
     emit(TaskState(
@@ -100,6 +101,44 @@ class TaskBloc extends HydratedBloc<TaskEvent, TaskState> {
       completedTasks: List.from(state.completedTasks),
       favoriteTasks: List.from(state.favoriteTasks),
     ));
+  }
+
+  void _searchTaskEvent(SearchTaskEvent event, Emitter<TaskState> emit) {
+    List<Task> searchedTasks = [];
+    if (event.task.isDone == false) {
+      if (event.searchValue != '') {
+        List<Task> listTask = state.pendingTasks;
+        for (Task task in listTask) {
+          if (task.title
+              .toLowerCase()
+              .contains(event.searchValue.toLowerCase())) {
+            searchedTasks.add(task);
+          }
+        }
+        print(searchedTasks.length);
+      } else {
+        List<Task> listTask = state.pendingTasks;
+        List<Task> searchedTasks = [];
+        for (Task task in listTask) {
+          searchedTasks.add(task);
+        }
+      }
+    } else {
+      List<Task> listTask = state.completedTasks;
+      for (Task task in listTask) {
+        if (task.title
+            .toLowerCase()
+            .contains(event.searchValue.toLowerCase())) {
+          searchedTasks.add(task);
+        }
+      }
+    }
+    emit(TaskState(
+        removedTasks: List.from(state.removedTasks)..remove(event.task),
+        pendingTasks: List.from(state.pendingTasks),
+        completedTasks: List.from(state.completedTasks),
+        favoriteTasks: List.from(state.favoriteTasks),
+        searchedTasks: searchedTasks));
   }
 
   @override

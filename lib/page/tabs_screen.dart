@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:todo_app/blocs/task_bloc/task_bloc.dart';
 import 'package:todo_app/blocs/task_bloc/task_event.dart';
 import 'package:todo_app/page/completed_task_screen.dart';
@@ -25,7 +26,9 @@ class _TabsScreenState extends State<TabsScreen> {
   ];
   void _addTask(BuildContext context) {
     TextEditingController titleController = TextEditingController();
+    TextEditingController descriptionController = TextEditingController();
     showModalBottomSheet(
+        isScrollControlled: true,
         shape: const RoundedRectangleBorder(),
         context: context,
         builder: (context) => SingleChildScrollView(
@@ -37,12 +40,32 @@ class _TabsScreenState extends State<TabsScreen> {
                     right: 20),
                 child: Column(
                   children: [
-                    const Text('Add Task'),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'Add Task',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ),
                     TextField(
                       controller: titleController,
                       autofocus: true,
                       decoration: const InputDecoration(
                           label: Text('Title'), border: OutlineInputBorder()),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                      child: TextField(
+                        minLines: 3,
+                        maxLines: 5,
+                        controller: descriptionController,
+                        decoration: const InputDecoration(
+                            label: Text('description'),
+                            border: OutlineInputBorder()),
+                      ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -57,10 +80,16 @@ class _TabsScreenState extends State<TabsScreen> {
                           onPressed: () {
                             BlocProvider.of<TaskBloc>(context).add(AddTaskEvent(
                                 task: Task(
-                                    title: titleController.text,
-                                    id: DateTime.now().toString())));
+                              title: titleController.text,
+                              description: descriptionController.text,
+                              id: DateTime.now().toString(),
+                              time: DateFormat('dd-MM-yyyy')
+                                  .add_jm()
+                                  .format(DateTime.now()),
+                            )));
                             Navigator.pop(context);
                             titleController.clear();
+                            descriptionController.clear();
                           },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.deepPurple),
@@ -79,18 +108,20 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    // double width = MediaQuery.of(context).size.width;
+    // double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: tabs[currentIndex]['page'],
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            _addTask(context);
-          },
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-          child: const Icon(Icons.add)),
+      floatingActionButton: currentIndex == 0
+          ? FloatingActionButton(
+              onPressed: () {
+                _addTask(context);
+              },
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
+              child: const Icon(Icons.add))
+          : null,
       bottomNavigationBar: BottomNavigationBar(
           onTap: (index) {
             setState(() {

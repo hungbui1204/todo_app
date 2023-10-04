@@ -7,21 +7,29 @@ class TaskState extends Equatable {
   final List<Task> completedTasks;
   final List<Task> favoriteTasks;
   final List<Task> removedTasks;
+  final List<Task> searchedTasks;
   const TaskState(
       {this.completedTasks = const <Task>[],
       this.removedTasks = const <Task>[],
       this.pendingTasks = const <Task>[],
-      this.favoriteTasks = const <Task>[]});
+      this.favoriteTasks = const <Task>[],
+      this.searchedTasks = const <Task>[]});
 
   @override
-  List<Object?> get props =>
-      [pendingTasks, removedTasks, favoriteTasks, completedTasks];
+  List<Object?> get props => [
+        pendingTasks,
+        removedTasks,
+        favoriteTasks,
+        completedTasks,
+        searchedTasks,
+      ];
   Map<String, dynamic> toMap() {
     return {
       'pendingTasks': pendingTasks.map((e) => e.toMap()).toList(),
       'completedTasks': completedTasks.map((e) => e.toMap()).toList(),
       'favoriteTasks': favoriteTasks.map((e) => e.toMap()).toList(),
-      'removedTasks': removedTasks.map((e) => e.toMap()).toList()
+      'removedTasks': removedTasks.map((e) => e.toMap()).toList(),
+      'searchedTasks': searchedTasks.map((e) => e.toMap()).toList(),
     };
   }
 
@@ -33,6 +41,8 @@ class TaskState extends Equatable {
             List<Task>.from(map['completedTasks']?.map((e) => Task.fromMap(e))),
         favoriteTasks:
             List<Task>.from(map['favoriteTasks']?.map((e) => Task.fromMap(e))),
+        searchedTasks:
+            List<Task>.from(map['searchedTasks']?.map((e) => Task.fromMap(e))),
         removedTasks:
             List<Task>.from(map['removedTasks']?.map((e) => Task.fromMap(e))));
   }

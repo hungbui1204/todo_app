@@ -1,85 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/blocs/task_bloc/task_bloc.dart';
+import 'package:todo_app/blocs/task_bloc/task_event.dart';
 import 'package:todo_app/blocs/task_bloc/task_state.dart';
+import 'package:todo_app/widgets/task_appbar.dart';
+import 'package:todo_app/widgets/task_card.dart';
+import 'package:todo_app/widgets/task_info.dart';
+import 'package:todo_app/widgets/task_tile.dart';
 
-import '../blocs/task_bloc/task_event.dart';
 import '../model/task_model.dart';
 import '../widgets/drawer.dart';
 
-class PendingTaskScreen extends StatelessWidget {
+class PendingTaskScreen extends StatefulWidget {
   const PendingTaskScreen({Key? key}) : super(key: key);
 
   @override
+  State<PendingTaskScreen> createState() => _PendingTaskScreenState();
+}
+
+class _PendingTaskScreenState extends State<PendingTaskScreen> {
+  @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
     return BlocBuilder<TaskBloc, TaskState>(builder: (context, state) {
       List<Task> allTasks = state.pendingTasks.reversed.toList();
+      List<Task> searchedTasks = state.searchedTasks.reversed.toList();
+      void handleSearch(String input) {
+        BlocProvider.of<TaskBloc>(context)
+            .add(SearchTaskEvent(searchValue: input, task: allTasks.first));
+      }
+
       return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Pending Tasks',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
+        appBar: taskAppBar('Pending Tasks'),
         drawer: buildDrawer(context, state),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 15),
-                height: 35,
-                width: 70,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.grey.shade300),
-                child: Center(
-                  child: Text(
-                    state.pendingTasks.length > 1
-                        ? '${state.pendingTasks.length} Tasks'
-                        : '${state.pendingTasks.length} Task',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  taskCard(context),
+                  SizedBox(
+                    height: 35,
+                    width: 150,
+                    child: TextField(
+                      onChanged: handleSearch,
+                      style: const TextStyle(fontSize: 14),
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          prefixIcon: const Icon(Icons.search),
+                          hintText: 'Search',
+                          contentPadding: EdgeInsets.zero),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: ExpansionPanelList.radio(
+                  children: (searchedTasks.isEmpty ? allTasks : searchedTasks)
+                      .map((task) => ExpansionPanelRadio(
+                          value: task.id,
+                          headerBuilder: (context, isOpened) =>
+                              taskTile(context, task),
+                          body: taskInfo(task)))
+                      .toList(),
                 ),
               ),
-              SizedBox(
-                height: height * 0.9,
-                child: ListView.builder(
-                    itemCount: allTasks.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(
-                          allTasks[index].title,
-                          style: TextStyle(
-                              decoration: allTasks[index].isDone!
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none),
-                        ),
-                        trailing: SizedBox(
-                          width: width * 0.2,
-                          child: Row(
-                            children: [
-                              Checkbox(
-                                  value: allTasks[index].isDone,
-                                  onChanged: (newValue) {
-                                    BlocProvider.of<TaskBloc>(context).add(
-                                        UpdateTaskEvent(task: allTasks[index]));
-                                  }),
-                              GestureDetector(
-                                  onTap: () {
-                                    BlocProvider.of<TaskBloc>(context).add(
-                                        RemoveTaskEvent(task: allTasks[index]));
-                                  },
-                                  child: const Icon(Icons.delete)),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
-              )
-            ],
-          ),
+            )
+          ],
         ),
       );
     });

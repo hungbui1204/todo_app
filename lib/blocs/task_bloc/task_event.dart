@@ -40,3 +40,11 @@ class DeleteTaskEvent extends TaskEvent {
   @override
   List<Object?> get props => [task];
 }
+
+class SearchTaskEvent extends TaskEvent {
+  final Task task;
+  final String searchValue;
+  const SearchTaskEvent({required this.task, required this.searchValue});
+  @override
+  List<Object?> get props => [task, searchValue];
+}
