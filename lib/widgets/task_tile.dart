@@ -8,7 +8,19 @@ import '../model/task_model.dart';
 ListTile taskTile(BuildContext context, Task task) {
   double width = MediaQuery.of(context).size.width;
   double height = MediaQuery.of(context).size.height;
+  TextEditingController titleController =
+      TextEditingController(text: task.title);
+  TextEditingController descriptionController =
+      TextEditingController(text: task.description);
   return ListTile(
+    leading: SizedBox(
+        width: width * 0.1,
+        child: GestureDetector(
+            onTap: () {
+              BlocProvider.of<TaskBloc>(context)
+                  .add(FavoriteTaskEvent(task: task));
+            },
+            child: const Icon(Icons.star_border_purple500_outlined))),
     title: Text(
       task.title,
       overflow: TextOverflow.ellipsis,
@@ -18,7 +30,7 @@ ListTile taskTile(BuildContext context, Task task) {
     ),
     subtitle: Text('Created time: ${task.time}'),
     trailing: SizedBox(
-      width: width * 0.2,
+      width: width * 0.22,
       child: Row(
         children: [
           Checkbox(
@@ -27,12 +39,127 @@ ListTile taskTile(BuildContext context, Task task) {
                 BlocProvider.of<TaskBloc>(context)
                     .add(UpdateTaskEvent(task: task));
               }),
-          GestureDetector(
-              onTap: () {
-                BlocProvider.of<TaskBloc>(context)
-                    .add(RemoveTaskEvent(task: task));
-              },
-              child: const Icon(Icons.delete)),
+          SizedBox(
+            width: width * 0.08,
+            child: PopupMenuButton(
+                itemBuilder: (context) => [
+                      PopupMenuItem(
+                          onTap: () {
+                            showModalBottomSheet(
+                                isScrollControlled: true,
+                                shape: const RoundedRectangleBorder(),
+                                context: context,
+                                builder: (context) => SingleChildScrollView(
+                                      child: Container(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom,
+                                            top: 20,
+                                            left: 20,
+                                            right: 20),
+                                        child: Column(
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.all(8.0),
+                                              child: Text(
+                                                'Edit Task',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16),
+                                              ),
+                                            ),
+                                            TextField(
+                                              controller: titleController,
+                                              autofocus: true,
+                                              decoration: const InputDecoration(
+                                                  label: Text('Title'),
+                                                  border: OutlineInputBorder()),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            SizedBox(
+                                              child: TextField(
+                                                minLines: 3,
+                                                maxLines: 5,
+                                                controller:
+                                                    descriptionController,
+                                                decoration: const InputDecoration(
+                                                    label: Text('description'),
+                                                    border:
+                                                        OutlineInputBorder()),
+                                              ),
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child:
+                                                        const Text('Cancel')),
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    BlocProvider.of<TaskBloc>(
+                                                            context)
+                                                        .add(EditTextEvent(
+                                                            task: task,
+                                                            editedTitle:
+                                                                titleController
+                                                                    .text,
+                                                            editedDescription:
+                                                                descriptionController
+                                                                    .text));
+                                                    Navigator.pop(context);
+                                                  },
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                          backgroundColor:
+                                                              Colors
+                                                                  .deepPurple),
+                                                  child: const Text(
+                                                    'Edit',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ));
+                          },
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Edit'),
+                              Icon(Icons.edit),
+                            ],
+                          )),
+                      PopupMenuItem(
+                          onTap: () {
+                            BlocProvider.of<TaskBloc>(context)
+                                .add(RemoveTaskEvent(task: task));
+                          },
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Move to recycle bin'),
+                              Icon(Icons.delete),
+                            ],
+                          )),
+                    ]),
+          )
+          // GestureDetector(
+          //     onTap: () {
+          //       BlocProvider.of<TaskBloc>(context)
+          //           .add(RemoveTaskEvent(task: task));
+          //     },
+          //     child: const Icon(Icons.delete)),
         ],
       ),
     ),

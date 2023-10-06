@@ -48,3 +48,22 @@ class SearchTaskEvent extends TaskEvent {
   @override
   List<Object?> get props => [task, searchValue];
 }
+
+class EditTextEvent extends TaskEvent {
+  final Task task;
+  final String editedTitle;
+  final String editedDescription;
+  const EditTextEvent(
+      {required this.task,
+      required this.editedTitle,
+      required this.editedDescription});
+  @override
+  List<Object?> get props => [task, editedTitle, editedDescription];
+}
+
+class FavoriteTaskEvent extends TaskEvent {
+  final Task task;
+  const FavoriteTaskEvent({required this.task});
+  @override
+  List<Object?> get props => [task];
+}
