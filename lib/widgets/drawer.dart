@@ -28,14 +28,17 @@ Drawer buildDrawer(BuildContext context, TaskState taskState) {
           ListTile(
             title: Text(
                 'My tasks (${taskState.pendingTasks.length + taskState.completedTasks.length})'),
-            trailing: const Icon(Icons.folder_shared),
+            trailing: const Icon(
+              Icons.folder_shared,
+              color: Colors.orangeAccent,
+            ),
             onTap: () {
               Navigator.of(context).pushReplacementNamed(TabsScreen.id);
             },
           ),
           ListTile(
             title: Text('Recycle bin (${taskState.removedTasks.length})'),
-            trailing: const Icon(Icons.recycling),
+            trailing: const Icon(Icons.recycling, color: Colors.green),
             onTap: () {
               Navigator.of(context).pushReplacementNamed(RecycleBinScreen.id);
             },

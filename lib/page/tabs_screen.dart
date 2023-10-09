@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:todo_app/blocs/task_bloc/task_bloc.dart';
 import 'package:todo_app/blocs/task_bloc/task_event.dart';
 import 'package:todo_app/page/completed_task_screen.dart';
@@ -80,22 +79,19 @@ class _TabsScreenState extends State<TabsScreen> {
                           onPressed: () {
                             BlocProvider.of<TaskBloc>(context).add(AddTaskEvent(
                                 task: Task(
-                              title: titleController.text,
-                              description: descriptionController.text,
-                              id: DateTime.now().toString(),
-                              time: DateFormat('dd-MM-yyyy')
-                                  .add_jm()
-                                  .format(DateTime.now()),
-                            )));
+                                    title: titleController.text,
+                                    description: descriptionController.text,
+                                    id: DateTime.now().toString(),
+                                    time: DateTime.now())));
                             Navigator.pop(context);
                             titleController.clear();
                             descriptionController.clear();
                           },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.deepPurple),
+                          // style: ElevatedButton.styleFrom(
+                          //     backgroundColor: Colors.deepPurple),
                           child: const Text(
                             'Add',
-                            style: TextStyle(color: Colors.white),
+                            // style: TextStyle(color: Colors.white),
                           ),
                         )
                       ],

@@ -4,7 +4,7 @@ class Task extends Equatable {
   final String title;
   final String description;
   final String id;
-  final String time;
+  final DateTime time;
   bool? isDone;
   bool? isDeleted;
   bool? isFavorite;
@@ -23,7 +23,7 @@ class Task extends Equatable {
   Task copyWith(
       {String? title,
       String? description,
-      String? time,
+      DateTime? time,
       String? id,
       bool? isDone,
       bool? isFavorite,
@@ -43,7 +43,7 @@ class Task extends Equatable {
         title: map['title'] ?? '',
         description: map['description'] ?? '',
         id: map['id'],
-        time: map['time'],
+        time: map['time'].toDateTime(),
         isDone: map['isDone'],
         isFavorite: map['isFavorite'],
         isDeleted: map['isDeleted']);
@@ -53,7 +53,7 @@ class Task extends Equatable {
       'title': title,
       'description': description,
       'id': id,
-      'time': time,
+      'time': time.toString(),
       'isDone': isDone,
       'isDeleted': isDeleted,
       'isFavorite': isFavorite,
@@ -63,5 +63,5 @@ class Task extends Equatable {
   @override
   // TODO: implement props
   List<Object?> get props =>
-      [title, isDone, isDeleted, id, description, time, isFavorite];
+      [title, isDone, isDeleted, id, description, time, isFavorite, time];
 }

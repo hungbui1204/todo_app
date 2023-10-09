@@ -4,7 +4,7 @@ AppBar taskAppBar(String title) {
   return AppBar(
     title: Text(
       title,
-      style: const TextStyle(color: Colors.white),
+      //style: const TextStyle(color: Colors.white),
     ),
   );
 }

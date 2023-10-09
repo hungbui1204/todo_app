@@ -23,7 +23,11 @@ class _PendingTaskScreenState extends State<PendingTaskScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<TaskBloc, TaskState>(builder: (context, state) {
       List<Task> allTasks = state.pendingTasks.reversed.toList();
+      allTasks.sort(
+        (a, b) => b.time.compareTo(a.time),
+      );
       List<Task> searchedTasks = state.searchedTasks.reversed.toList();
+      searchedTasks.sort((a, b) => b.time.compareTo(a.time));
       void handleSearch(String input) {
         BlocProvider.of<TaskBloc>(context)
             .add(SearchTaskEvent(searchValue: input, task: allTasks.first));

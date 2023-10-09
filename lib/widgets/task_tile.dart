@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../blocs/task_bloc/task_bloc.dart';
 import '../blocs/task_bloc/task_event.dart';
@@ -20,7 +21,12 @@ ListTile taskTile(BuildContext context, Task task) {
               BlocProvider.of<TaskBloc>(context)
                   .add(FavoriteTaskEvent(task: task));
             },
-            child: const Icon(Icons.star_border_purple500_outlined))),
+            child: task.isFavorite!
+                ? Icon(Icons.star, color: Colors.orangeAccent)
+                : Icon(
+                    Icons.star_border_purple500_outlined,
+                    color: Colors.grey,
+                  ))),
     title: Text(
       task.title,
       overflow: TextOverflow.ellipsis,
@@ -28,7 +34,8 @@ ListTile taskTile(BuildContext context, Task task) {
           decoration:
               task.isDone! ? TextDecoration.lineThrough : TextDecoration.none),
     ),
-    subtitle: Text('Created time: ${task.time}'),
+    subtitle: Text(
+        'Created time: ${DateFormat('dd-MM-yyyy').add_jm().format(task.time)}'),
     trailing: SizedBox(
       width: width * 0.22,
       child: Row(
@@ -115,15 +122,15 @@ ListTile taskTile(BuildContext context, Task task) {
                                                                     .text));
                                                     Navigator.pop(context);
                                                   },
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                          backgroundColor:
-                                                              Colors
-                                                                  .deepPurple),
+                                                  // style:
+                                                  //     ElevatedButton.styleFrom(
+                                                  //         backgroundColor:
+                                                  //             Colors
+                                                  //                 .deepPurple),
                                                   child: const Text(
                                                     'Edit',
-                                                    style: TextStyle(
-                                                        color: Colors.white),
+                                                    // style: TextStyle(
+                                                    //     color: Colors.white),
                                                   ),
                                                 )
                                               ],
@@ -137,7 +144,7 @@ ListTile taskTile(BuildContext context, Task task) {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Edit'),
-                              Icon(Icons.edit),
+                              Icon(Icons.edit, color: Colors.green),
                             ],
                           )),
                       PopupMenuItem(
@@ -149,7 +156,10 @@ ListTile taskTile(BuildContext context, Task task) {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Move to recycle bin'),
-                              Icon(Icons.delete),
+                              Icon(
+                                Icons.delete,
+                                color: Colors.redAccent,
+                              ),
                             ],
                           )),
                     ]),

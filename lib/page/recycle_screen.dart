@@ -17,6 +17,12 @@ class RecycleBinScreen extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
     return BlocBuilder<TaskBloc, TaskState>(builder: (context, state) {
       List<Task> removedTasks = state.removedTasks.reversed.toList();
+      List<Task> favoriteTasks = [];
+      for (Task task in removedTasks) {
+        if (task.isFavorite!) {
+          favoriteTasks.add(task);
+        }
+      }
       return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -31,16 +37,25 @@ class RecycleBinScreen extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 15),
                 height: 35,
-                width: 70,
+                width: width * 0.4,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     color: Colors.grey.shade300),
                 child: Center(
-                  child: Text(
-                    state.removedTasks.length > 1
-                        ? '${state.removedTasks.length} Tasks'
-                        : '${state.removedTasks.length} Task',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        state.removedTasks.length > 1
+                            ? '${state.removedTasks.length} Tasks'
+                            : '${state.removedTasks.length} Task',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        ' (Favorite: ${favoriteTasks.length})',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    ],
                   ),
                 ),
               ),
@@ -51,12 +66,24 @@ class RecycleBinScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return ListTile(
                         contentPadding: const EdgeInsets.only(left: 15),
-                        title: Text(
-                          removedTasks[index].title,
-                          style: TextStyle(
-                              decoration: removedTasks[index].isDone!
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none),
+                        title: Row(
+                          children: [
+                            removedTasks[index].isFavorite!
+                                ? const Icon(
+                                    Icons.star_border_purple500_outlined,
+                                    color: Colors.orangeAccent,
+                                  )
+                                : const SizedBox(
+                                    width: 24,
+                                  ),
+                            Text(
+                              removedTasks[index].title,
+                              style: TextStyle(
+                                  decoration: removedTasks[index].isDone!
+                                      ? TextDecoration.lineThrough
+                                      : TextDecoration.none),
+                            ),
+                          ],
                         ),
                         trailing: SizedBox(
                           width: width * 0.25,
